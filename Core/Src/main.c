@@ -21,7 +21,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "Addition.h"
+#include "Multiply.h"
+#include "Debug.h"
+#include "minu_test.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -42,7 +45,7 @@
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
+uint8_t debug_Command = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -95,6 +98,21 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
+	switch (debug_Command)
+	{
+		case 0x10:
+			print_Debug ("Command received, running tests... \n\r \n\r");
+
+			addTwoValues (5, 5);
+			multTwoValues (5, 5);
+			run_Tests ();
+
+			debug_Command = 0;
+			break;
+		default:
+			break;
+	}
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -187,7 +205,10 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	debug_Command = ack_DebugRdy ();
+}
 /* USER CODE END 4 */
 
 /**
